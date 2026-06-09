@@ -16,19 +16,23 @@ sized for the desired per-test power before running:
 Loading
 -------
 The package registers itself with pytest via the ``pytest11`` entry point in
-``pyproject.toml``::
+``pyproject.toml``:
 
-    [project.entry-points."pytest11"]
-    random = "pytest_random"
+```toml
+[project.entry-points."pytest11"]
+random = "pytest_random"
+```
 
 Installing the package is sufficient — pytest discovers the entry point at
 startup and loads the plugin automatically.  No ``conftest.py`` import is
 required in the project under test.
 
 If you are working from a source checkout without installing the package,
-add the following to your project's ``conftest.py`` instead::
+add the following to your project's ``conftest.py`` instead:
 
-    pytest_plugins = ["pytest_random"]
+```python
+pytest_plugins = ["pytest_random"]
+```
 """
 from __future__ import annotations
 
@@ -143,11 +147,13 @@ def _ks_n(alpha: float, power: float, effect_size: float, two_sample: bool = Fal
 class PValueReporter:
     """Callable returned by the ``pvalue`` fixture.
 
-    The test calls it once with its computed p-value::
+    The test calls it once with its computed p-value:
 
-        def test_foo(pvalue):
-            p = run_experiment()
-            pvalue(p)
+    ```python
+    def test_foo(pvalue):
+        p = run_experiment()
+        pvalue(p)
+    ```
     """
 
     def __init__(self) -> None:
@@ -334,11 +340,13 @@ def pvalue(request: pytest.FixtureRequest) -> PValueReporter:
     Call the returned object once inside your test with the computed p-value.
     The plugin will determine pass/fail after all tests finish.
 
-    Example::
+    Example:
 
-        def test_chi_squared(pvalue):
-            stat, p = scipy.stats.chisquare(observed, expected)
-            pvalue(p)
+    ```python
+    def test_chi_squared(pvalue):
+        stat, p = scipy.stats.chisquare(observed, expected)
+        pvalue(p)
+    ```
     """
     plugin: HolmBonferroniPlugin = request.config._holm_plugin  # type: ignore[attr-defined]
     reporter = PValueReporter()
@@ -350,14 +358,16 @@ def pvalue(request: pytest.FixtureRequest) -> PValueReporter:
 def ztest_sample_size(request: pytest.FixtureRequest) -> Callable[..., int]:
     """Return required n for a z-test at the session's alpha and power.
 
-    Usage::
+    Usage:
 
-        def test_mean(ztest_sample_size, pvalue):
-            n = ztest_sample_size(effect_size=0.5)          # two-sided
-            n = ztest_sample_size(effect_size=0.5, two_sided=False)
-            data = generate(n)
-            _, p = scipy.stats.ttest_1samp(data, 0)
-            pvalue(p)
+    ```python
+    def test_mean(ztest_sample_size, pvalue):
+        n = ztest_sample_size(effect_size=0.5)          # two-sided
+        n = ztest_sample_size(effect_size=0.5, two_sided=False)
+        data = generate(n)
+        _, p = scipy.stats.ttest_1samp(data, 0)
+        pvalue(p)
+    ```
 
     ``effect_size`` is Cohen's d (mean difference / pooled SD).
     Returns per-group n for a two-sample test.
@@ -374,13 +384,15 @@ def ztest_sample_size(request: pytest.FixtureRequest) -> Callable[..., int]:
 def chisquare_sample_size(request: pytest.FixtureRequest) -> Callable[..., int]:
     """Return required n for a chi-square goodness-of-fit test.
 
-    Usage::
+    Usage:
 
-        def test_distribution(chisquare_sample_size, pvalue):
-            n = chisquare_sample_size(effect_size=0.3, df=4)
-            counts = generate(n)
-            _, p = scipy.stats.chisquare(counts, expected)
-            pvalue(p)
+    ```python
+    def test_distribution(chisquare_sample_size, pvalue):
+        n = chisquare_sample_size(effect_size=0.3, df=4)
+        counts = generate(n)
+        _, p = scipy.stats.chisquare(counts, expected)
+        pvalue(p)
+    ```
 
     ``effect_size`` is Cohen's w; ``df`` is the degrees of freedom
     (number of categories − 1 for goodness-of-fit).
@@ -397,14 +409,16 @@ def chisquare_sample_size(request: pytest.FixtureRequest) -> Callable[..., int]:
 def ks_sample_size(request: pytest.FixtureRequest) -> Callable[..., int]:
     """Return required n for a KS test, sized via the DKW inequality.
 
-    Usage::
+    Usage:
 
-        def test_uniform(ks_sample_size, pvalue):
-            n = ks_sample_size(effect_size=0.1)              # one-sample
-            n = ks_sample_size(effect_size=0.1, two_sample=True)  # per-group
-            data = generate(n)
-            p = scipy.stats.kstest(data, 'uniform').pvalue
-            pvalue(p)
+    ```python
+    def test_uniform(ks_sample_size, pvalue):
+        n = ks_sample_size(effect_size=0.1)              # one-sample
+        n = ks_sample_size(effect_size=0.1, two_sample=True)  # per-group
+        data = generate(n)
+        p = scipy.stats.kstest(data, 'uniform').pvalue
+        pvalue(p)
+    ```
 
     ``effect_size`` is the maximum absolute CDF difference ||F − G||_∞.
     When ``two_sample=True`` the returned value is the required per-group n

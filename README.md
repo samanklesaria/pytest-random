@@ -9,8 +9,8 @@ family-wise error rate (FWER) via the Holm-Bonferroni step-down procedure. [![][
 
 A test suite that contains several independent statistical tests will, under the
 null hypothesis, produce at least one false positive with probability greater
-than the nominal level α.  For *m* independent tests each at level α the FWER
-is `1 − (1−α)^m`.  Holm-Bonferroni corrects for this without being as
+than the nominal level α.  For $m$ independent tests each at level $\alpha$ the FWER
+is $1 - (1-\alpha)^m$.  Holm-Bonferroni corrects for this without being as
 conservative as a plain Bonferroni adjustment.
 
 The complication is that Holm-Bonferroni must process p-values from smallest to
@@ -104,14 +104,14 @@ The exit code is non-zero if any test fails the corrected threshold.
 
 ## How the step-down procedure works
 
-Given *m* tests with p-values sorted ascending as p₁ ≤ p₂ ≤ … ≤ p_m:
+Given $m$ tests with p-values sorted ascending as $p_1 \le p_2 \le \cdots \le p_m$:
 
-- At rank *k*, the threshold is α / (m − k + 1).
-- Starting from k = 1, reject H₀ while pₖ ≤ threshold.
+- At rank $k$, the threshold is $\alpha / (m - k + 1)$.
+- Starting from $k = 1$, reject $H_0$ while $p_k \le \text{threshold}$.
 - As soon as a p-value exceeds its threshold, stop rejecting — that test and
   all remaining ones fail.
 
-This is more powerful than Bonferroni (α/m for all tests) because later ranks
+This is more powerful than Bonferroni ($\alpha/m$ for all tests) because later ranks
 receive a relaxed threshold once earlier hypotheses have been rejected.
 
 ## CLI options
@@ -149,9 +149,7 @@ n = ztest_sample_size(effect_size=0.5, two_sided=False)
 
 `effect_size` is Cohen's d.  Uses the exact closed form:
 
-```
-n = ⌈((z_α + z_β) / d)²⌉
-```
+$$n = \left\lceil \left(\frac{z_\alpha + z_\beta}{d}\right)^2 \right\rceil$$
 
 Returns per-group *n* for a two-sample test.
 
@@ -161,7 +159,7 @@ Returns per-group *n* for a two-sample test.
 n = chisquare_sample_size(effect_size=0.3, df=4)
 ```
 
-`effect_size` is Cohen's w = √(Σ (pᵢ − p₀ᵢ)² / p₀ᵢ); `df` is the degrees of
+`effect_size` is Cohen's $w = \sqrt{\sum (p_i - p_{0i})^2 / p_{0i}}$; `df` is the degrees of
 freedom (number of categories − 1 for goodness-of-fit).  Solves numerically via
 the non-central χ² survival function.
 
@@ -172,15 +170,13 @@ n = ks_sample_size(effect_size=0.1)                 # one-sample
 n = ks_sample_size(effect_size=0.1, two_sample=True) # per-group
 ```
 
-`effect_size` is the maximum absolute CDF difference ‖F − G‖∞ ∈ (0, 1].
+`effect_size` is the maximum absolute CDF difference $\|F - G\|_\infty \in (0, 1]$.
 Uses the DKW-inequality bound:
 
-```
-n ≥ (√ln(2/α) + √ln(2/β))² / (2 Δ²)
-```
+$$n \ge \frac{\left(\sqrt{\ln(2/\alpha)} + \sqrt{\ln(2/\beta)}\right)^2}{2\Delta^2}$$
 
-where β = 1 − power.  For `two_sample=True` the effective sample size for the
-two-sample KS statistic is n₁n₂/(n₁+n₂) = n_each/2 (equal groups), so the
+where $\beta = 1 - \text{power}$.  For `two_sample=True` the effective sample size for the
+two-sample KS statistic is $n_1 n_2/(n_1+n_2) = n_\text{each}/2$ (equal groups), so the
 returned per-group count is double the formula above.
 
 ## API reference
