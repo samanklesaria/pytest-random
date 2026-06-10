@@ -20,7 +20,7 @@ The package registers itself with pytest via the ``pytest11`` entry point in
 
 ```toml
 [project.entry-points."pytest11"]
-random = "pytest_random"
+random = "pytest_familywise"
 ```
 
 Installing the package is sufficient — pytest discovers the entry point at
@@ -31,7 +31,7 @@ If you are working from a source checkout without installing the package,
 add the following to your project's ``conftest.py`` instead:
 
 ```python
-pytest_plugins = ["pytest_random"]
+pytest_plugins = ["pytest_familywise"]
 ```
 """
 from __future__ import annotations

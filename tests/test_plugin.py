@@ -1,7 +1,7 @@
 """Tests for the Holm-Bonferroni pytest plugin."""
 import math
 import pytest
-from pytest_random import _ztest_n, _chisquare_n, _ks_n
+from pytest_familywise import _ztest_n, _chisquare_n, _ks_n
 
 
 # ---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
-<img src="./pytest-random-logo.png" style="zoom:25%;" />
+<img src="./pytest-familywise-logo.png" style="zoom:25%;" />
 
-# pytest-random
+# pytest-familywise
 
 A pytest plugin for running multiple randomized tests while controlling the
 family-wise error rate (FWER) via the Holm-Bonferroni step-down procedure. [![][docs-dev-img]][docs-dev-url]
@@ -24,7 +24,7 @@ applied once to the full set.
 Add the package as a dev dependency:
 
 ```
-pip add --dev pytest-random
+pip add --dev pytest-familywise
 ```
 
 That is all that is needed.  The package declares a `pytest11` entry point:
@@ -32,12 +32,12 @@ That is all that is needed.  The package declares a `pytest11` entry point:
 ```toml
 # pyproject.toml
 [project.entry-points."pytest11"]
-random = "pytest_random"
+random = "pytest_familywise"
 ```
 
 pytest scans installed `pytest11` entry points at startup and loads matching
 modules automatically.  The fixtures (`assertNotReject`, `ztest_sample_size`, etc.) are
-defined at module level in `pytest_random`, so they become available in every
+defined at module level in `pytest_familywise`, so they become available in every
 test file without any import or `conftest.py` change.
 
 
@@ -172,4 +172,4 @@ two-sample KS statistic is $n_1 n_2/(n_1+n_2) = n_\text{each}/2$ (equal groups),
 returned per-group count is double the formula above.
 
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[docs-dev-url]: https://samanklesaria.github.io/pytest-random
+[docs-dev-url]: https://samanklesaria.github.io/pytest-familywise
